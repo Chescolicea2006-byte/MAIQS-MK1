@@ -1,0 +1,57 @@
+[
+  {
+    "id": "FAL-KM74-001",
+    "plataforma": "KM74",
+    "modulo": "BCM",
+    "dtc": "U0140",
+    "sintoma": "Perdida de comunicacion CAN con BCM / Fallo en ciclado de luces",
+    "causa": "Conector C2 con pin 4 desenganchado en arnes principal de plataforma KM74.",
+    "solucion": "1. Desconectar bateria de 12V.\n2. Insfeccionar retencion mecanica en conector C2 de BCM.\n3. Reinsertar pin 4 hasta escuchar seguro de bloqueo.",
+    "pieza": "Arnes Principal BCM KM74 (P/N 68291-J)",
+    "exito_conteo": 18
+  },
+  {
+    "id": "FAL-KM74-002",
+    "plataforma": "KM74",
+    "modulo": "IPC",
+    "dtc": "U0155",
+    "sintoma": "Pantalla de cuadro de instrumentos (IPC) parpadea o se apaga intermitentemente",
+    "causa": "Falta de asentamiento en conector posterior de 20 pines del IPC por tension de arnes en tablero KM74.",
+    "solucion": "1. Retirar bisel de proteccion del IPC.\n2. Presionar conector trasero asegurando traba mecanica.\n3. Validar ruteo libre de tension en arnes.",
+    "pieza": "Modulo IPC / Arnes de Tablero KM74",
+    "exito_conteo": 22
+  },
+  {
+    "id": "FAL-MP-001",
+    "plataforma": "MP",
+    "modulo": "BCM",
+    "dtc": "B1025",
+    "sintoma": "Actuador de seguro de puerta no responde / Indicador de puerta abierta en consola",
+    "causa": "Pin 3 de conector C2 fuera de posicion en arnes de puerta delantera izquierda (Plataforma MP).",
+    "solucion": "1. Retirar panel de puerta del conductor.\n2. Inspeccionar pin 3 en conector C2 de BCM.\n3. Reinsertar con herramienta de extraccion y aplicar limpiador de contactos.",
+    "pieza": "Conector C2 Arnés Puerta MP",
+    "exito_conteo": 15
+  },
+  {
+    "id": "FAL-MP-002",
+    "plataforma": "MP",
+    "modulo": "IPC",
+    "dtc": "U0155",
+    "sintoma": "Sin comunicacion con cuadro de instrumentos IPC en prueba de linea",
+    "causa": "Fusible F14 desasentado en caja de distribucion IPDM (Plataforma MP).",
+    "solucion": "1. Ver caja de fusibles en compartimento de motor.\n2. Reasentar fusible F14 de 10A.\n3. Borrar DTC con escanner de prueba.",
+    "pieza": "Fusible 10A Mini / IPDM",
+    "exito_conteo": 9
+  },
+  {
+    "id": "FAL-GEN-001",
+    "plataforma": "KM74",
+    "modulo": "IPDM",
+    "dtc": "B1015",
+    "sintoma": "Caida de voltaje en linea B+ de distribucion de potencia",
+    "causa": "Mal asentamiento de fusible principal F12 en caja IPDM.",
+    "solucion": "1. Reasentar fusible F12.\n2. Verificar que las terminales internas de la caja no esten abiertas.",
+    "pieza": "Fusible 15A Mini",
+    "exito_conteo": 12
+  }
+]
