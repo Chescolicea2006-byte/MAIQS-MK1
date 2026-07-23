@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asistente IA de Diagnóstico - Planta</title>
+    <style>
+        :root {
+            --bg-canvas: #f0f4f9;
+            --card-bg: #ffffff;
+            --primary: #1a73e8;
+            --primary-hover: #1557b0;
+            --text-main: #1f1f1f;
+            --text-muted: #444746;
+            --border-color: #e0e2e5;
+            --user-msg: #e8f0fe;
+            --warning-bg: #fef7e0;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-canvas);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .top-bar {
+            width: 100%;
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 15px 25px;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .avatar-ai {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #1a73e8, #9333ea);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .top-bar h2 { margin: 0; font-size: 1.1rem; }
+
+        .main-chat-container {
+            width: 100%;
+            max-width: 800px;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .prompt-card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        select, input, textarea {
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            background-color: #fafafa;
+            color: var(--text-main);
+            outline: none;
+        }
+
+        select:focus, input:focus, textarea:focus {
+            border-color: var(--primary);
+            background-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(26,115,232,0.15);
+        }
+
+        .btn-query {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            font-size: 0.95rem;
+        }
+
+        .btn-query:hover { background-color: var(--primary-hover); }
+
+        .response-card {
+            display: none;
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .badge-info {
+            display: inline-block;
+            background-color: var(--user-msg);
+            color: var(--primary);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .box-cause {
+            background-color: var(--warning-bg);
+            border-left: 4px solid #f59e0b;
+            padding: 12px 15px;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+        }
+
+        .solution-text {
+            white-space: pre-wrap;
+            background-color: #f8fafc;
+            border: 1px solid var(--border-color);
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 0.93rem;
+            line-height: 1.5;
+        }
+
+        .feedback-box {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .feedback-buttons { display: flex; gap: 12px; margin-top: 12px; }
+
+        .btn-fb {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-approve { background-color: #10b981; color: white; }
+        .btn-reject { background-color: #ef4444; color: white; }
+        .btn-save { background-color: var(--primary); color: white; width: 100%; padding: 10px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 10px; }
+
+        #custom-alert-box {
+            display: none;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 800;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <div class="avatar-ai">✨</div>
+        <div>
+            <h2>Asistente IA de Diagnóstico (MAIQS-MK1)</h2>
+            <span style="font-size: 0.8rem; color: var(--text-muted);">Soporte Técnico de Piso | Prueba Eléctrica & Rework</span>
+        </div>
+    </div>
+
+    <div class="main-chat-container">
+
+        <div class="prompt-card">
+            <form id="diag-form">
+                <div class="form-grid">
+                    <div class="input-group">
+                        <label for="plataforma">Plataforma</label>
+                        <select id="plataforma" required>
+                            <option value="">-- Seleccionar --</option>
+                            <option value="KM74">KM74 (Jeep Cherokee)</option>
+                            <option value="MP">MP (Jeep Compass)</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="modulo">Módulo Afectado</label>
+                        <select id="modulo" required>
+                            <option value="">-- Seleccionar --</option>
+                            <option value="BCM">BCM (Body Control)</option>
+                            <option value="IPDM">IPDM (Distribución)</option>
+                            <option value="ABS">ABS / Frenos</option>
+                            <option value="IPC">IPC (Instrument Panel Cluster)</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="dtc">Código DTC</label>
+                        <input type="text" id="dtc" placeholder="Ej. U0140, U0155, B1025">
+                    </div>
+                </div>
+
+                <div class="input-group" style="margin-bottom: 15px;">
+                    <label for="sintoma">Observación / Síntoma de falla</label>
+                    <textarea id="sintoma" rows="2" placeholder="Escribe los síntomas observados..."></textarea>
+                </div>
+
+                <button type="submit" class="btn-query">✨ Analizar Diagnóstico</button>
+            </form>
+        </div>
+
+        <div id="custom-alert-box"></div>
+
+        <!-- TARJETA CON RESULTADO -->
+        <div id="result-card" class="response-card">
+            <span id="badge-info" class="badge-info"></span>
+            <h3 style="margin: 0 0 10px 0; color: var(--primary);">🤖 Diagnóstico Generado</h3>
+            
+            <div id="causa-raiz" class="box-cause"></div>
+            
+            <label style="display:block; margin-bottom: 6px;">Procedimiento de Reparación:</label>
+            <div id="pasos-solucion" class="solution-text"></div>
+            
+            <p style="margin-top: 12px; font-size: 0.9rem;">
+                <strong>Pieza / Arnés Involucrado:</strong> <span id="pieza-ref"></span>
+            </p>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">
+                Validaciones confirmadas previamente: <strong id="votos-conteo">0</strong>
+            </p>
+
+            <div class="feedback-box">
+                <span style="font-size: 0.9rem; font-weight: 600;">¿Funcionó la recomendación en la unidad?</span>
+                <div class="feedback-buttons">
+                    <button type="button" class="btn-fb btn-approve" onclick="votar(true)">👍 Funciona / Visto Bueno</button>
+                    <button type="button" class="btn-fb btn-reject" onclick="votar(false)">👎 No Funcionó</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TARJETA DTC NO REGISTRADO -->
+        <div id="new-dtc-card" class="response-card" style="border-left: 5px solid #f59e0b;">
+            <h3 style="margin: 0 0 10px 0; color: #b45309;">⚠️ Sin Registro Previsto</h3>
+            <p style="font-size: 0.9rem;">
+                El código <strong id="new-dtc-tag"></strong> no cuenta con antecedente previo registrado.
+            </p>
+
+            <div style="background-color: #fafafa; padding: 15px; border-radius: 8px; border: 1px solid var(--border-color);">
+                <h4 style="margin-top:0;">📝 Registrar Nueva Causa y Solución</h4>
+                
+                <div class="input-group" style="margin-bottom: 10px;">
+                    <label for="new-causa">Causa Raíz Identificada:</label>
+                    <input type="text" id="new-causa" placeholder="Ej. Pin fuera de posición">
+                </div>
+
+                <div class="input-group" style="margin-bottom: 10px;">
+                    <label for="new-solucion">Pasos Aplicados:</label>
+                    <textarea id="new-solucion" rows="3" placeholder="1. Retirar seguro...\n2. Reasentar pin..."></textarea>
+                </div>
+
+                <div class="input-group" style="margin-bottom: 10px;">
+                    <label for="new-pieza">Pieza o Arnés Involucrado:</label>
+                    <input type="text" id="new-pieza" placeholder="Ej. Conector IPC">
+                </div>
+
+                <button type="button" class="btn-save" onclick="guardarNuevaFalla()">💾 Guardar Falla en el Sistema</button>
+            </div>
+        </div>
+
+    </div>
+
+<script>
+    let baseDeDatosFallas = [];
+    let fallaActual = null;
+
+    fetch('fallas.json')
+        .then(response => response.json())
+        .then(data => {
+            baseDeDatosFallas = data;
+            const customData = localStorage.getItem('fallas_custom');
+            if (customData) {
+                baseDeDatosFallas = baseDeDatosFallas.concat(JSON.parse(customData));
+            }
+            baseDeDatosFallas.forEach(item => {
+                const v = localStorage.getItem('votos_' + item.id);
+                if (v) item.exito_conteo = parseInt(v);
+            });
+        })
+        .catch(err => console.error("Error al cargar fallas.json:", err));
+
+    document.getElementById('diag-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        document.getElementById('custom-alert-box').style.display = 'none';
+
+        const platSel = document.getElementById('plataforma').value;
+        const moduloSel = document.getElementById('modulo').value;
+        const dtcIngresado = document.getElementById('dtc').value.trim().toUpperCase();
+
+        const cardResult = document.getElementById('result-card');
+        const cardNew = document.getElementById('new-dtc-card');
+
+        let resultados = baseDeDatosFallas.filter(falla => {
+            const coincidePlataforma = falla.plataforma === platSel;
+            const coincideModulo = falla.modulo === moduloSel;
+            const coincideDTC = dtcIngresado === "" || falla.dtc.toUpperCase() === dtcIngresado;
+            return coincidePlataforma && coincideModulo && coincideDTC;
+        });
+
+        resultados.sort((a, b) => b.exito_conteo - a.exito_conteo);
+
+        if (resultados.length > 0) {
+            fallaActual = resultados[0];
+            document.getElementById('badge-info').innerText = `Plataforma: ${fallaActual.plataforma} | Módulo: ${fallaActual.modulo} | DTC: ${fallaActual.dtc}`;
+            document.getElementById('causa-raiz').innerHTML = `<strong>Causa Raíz:</strong> ${fallaActual.causa}`;
+            document.getElementById('pasos-solucion').innerText = fallaActual.solucion;
+            document.getElementById('pieza-ref').innerText = fallaActual.pieza;
+            document.getElementById('votos-conteo').innerText = fallaActual.exito_conteo;
+            
+            cardResult.style.display = 'block';
+            cardNew.style.display = 'none';
+        } else {
+            cardResult.style.display = 'none';
+            cardNew.style.display = 'block';
+            document.getElementById('new-dtc-tag').innerText = dtcIngresado || "Sin Código";
+        }
+    });
+
+    function guardarNuevaFalla() {
+        const platSel = document.getElementById('plataforma').value;
+        const moduloSel = document.getElementById('modulo').value;
+        const dtcIngresado = document.getElementById('dtc').value.trim().toUpperCase() || "N/A";
+        const causa = document.getElementById('new-causa').value.trim();
+        const solucion = document.getElementById('new-solucion').value.trim();
+        const pieza = document.getElementById('new-pieza').value.trim();
+
+        if (!causa || !solucion) {
+            alert("⚠️ Completa los campos de Causa Raíz y Solución.");
+            return;
+        }
+
+        const nuevaFalla = {
+            id: "FAL-USER-" + Date.now(),
+            plataforma: platSel,
+            modulo: moduloSel,
+            dtc: dtcIngresado,
+            sintoma: "Registrado por operador",
+            causa: causa,
+            solucion: solucion,
+            pieza: pieza || "N/A",
+            exito_conteo: 1
+        };
+
+        baseDeDatosFallas.push(nuevaFalla);
+        let customFallas = JSON.parse(localStorage.getItem('fallas_custom') || "[]");
+        customFallas.push(nuevaFalla);
+        localStorage.setItem('fallas_custom', JSON.stringify(customFallas));
+
+        mostrarBannerMensaje("ERES UNA AMENAZA", true);
+
+        document.getElementById('new-causa').value = "";
+        document.getElementById('new-solucion').value = "";
+        document.getElementById('new-pieza').value = "";
+        document.getElementById('diag-form').dispatchEvent(new Event('submit'));
+    }
+
+    function votar(exito) {
+        if (exito) {
+            if (fallaActual) {
+                fallaActual.exito_conteo++;
+                document.getElementById('votos-conteo').innerText = fallaActual.exito_conteo;
+                localStorage.setItem('votos_' + fallaActual.id, fallaActual.exito_conteo);
+            }
+            mostrarBannerMensaje("ERES UNA AMENAZA", true);
+        } else {
+            mostrarBannerMensaje("NO SE PASE DE LISTO INGENIERO", false);
+        }
+    }
+
+    function mostrarBannerMensaje(texto, esExito) {
+        const alertBox = document.getElementById('custom-alert-box');
+        alertBox.innerText = texto;
+        
+        if (esExito) {
+            alertBox.style.backgroundColor = "#dcfce7";
+            alertBox.style.color = "#15803d";
+            alertBox.style.border = "1px solid #86efac";
+        } else {
+            alertBox.style.backgroundColor = "#fee2e2";
+            alertBox.style.color = "#b91c1c";
+            alertBox.style.border = "1px solid #fca5a5";
+        }
+        
+        alertBox.style.display = 'block';
+    }
+</script>
+
+</body>
+</html>

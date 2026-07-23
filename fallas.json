@@ -1,0 +1,61 @@
+[
+  {
+    "id": "FAL-KM74-001",
+    "plataforma": "KM74",
+    "modulo": "BCM",
+    "dtc": "U0140",
+    "sintoma": "Pérdida de comunicación CAN / Fallo en ciclado de luces",
+    "causa": "Pin 4 desenganchado en el conector C2 del arnés principal.",
+    "solucion": "1. Inspeccionar traba del conector C2.\n2. Reasentar pin 4 hasta escuchar click.\n3. Realizar prueba de ciclado.",
+    "pieza": "Conector C2 / Arnés BCM",
+    "exito_conteo": 15
+  },
+  {
+    "id": "FAL-KM74-002",
+    "plataforma": "KM74",
+    "modulo": "IPC",
+    "dtc": "U0155",
+    "sintoma": "Pantalla del cuadro de instrumentos parpadea o se apaga",
+    "causa": "Falta de asentamiento en conector posterior de 20 pines del IPC por tensión de arnés.",
+    "solucion": "1. Retirar bisel de protección del IPC.\n2. Presionar conector trasero asegurando traba mecánica.\n3. Validar ruteo libre de tensión en arnés.",
+    "pieza": "Módulo IPC / Arnés de Tablero KM74",
+    "exito_conteo": 22
+  },
+  {
+    "id": "FAL-KM74-003",
+    "plataforma": "KM74",
+    "modulo": "IPDM",
+    "dtc": "B1015",
+    "sintoma": "Caída de voltaje en línea B+ de distribución",
+    "causa": "Mal asentamiento del fusible principal F12 (15A) en caja IPDM.",
+    "solucion": "1. Abrir cubierta de IPDM.\n2. Retirar y reasentar fusible F12.\n3. Verificar voltaje con multímetro.",
+    "pieza": "Caja de Distribución IPDM / Fusible F12",
+    "exito_conteo": 8
+  },
+  {
+    "id": "FAL-MP-001",
+    "plataforma": "MP",
+    "modulo": "BCM",
+    "dtc": "B1025",
+    "sintoma": "Seguro de puerta no responde / Indicador de puerta abierta",
+    "causa": "Pin 3 fuera de posición (push-out) en el conector C2 del arnés de puerta.",
+    "solucion": "1. Desconectar arnés de puerta C2.\n2. Empujar pin 3 a posición locking.\n3. Borrar DTC y probar actuador.",
+    "pieza": "Arnés de Puerta Delantera / Conector C2",
+    "exito_conteo": 12
+  },
+  {
+    "id": "FAL-MP-002",
+    "plataforma": "MP",
+    "modulo": "IPC",
+    "dtc": "U0155",
+    "sintoma": "Sin comunicación con cuadro de instrumentos en prueba de línea",
+    "causa": "Fusible F14 (10A) desasentado en caja de distribución IPDM.",
+    "solucion": "1. Revisar posición de fusible F14.\n2. Presionar hasta tope.\n3. Borrar DTC en estación EOL.",
+    "pieza": "Fusible F14 / IPDM",
+    "exito_conteo": 19
+  }
+]
+    "pieza": "Fusible 15A Mini",
+    "exito_conteo": 12
+  }
+]
